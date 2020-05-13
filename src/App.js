@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -9,7 +11,10 @@ import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Profile from "./components/profile.component";
 import Home from "./components/home.component";
+import Project from "./components/project.component";
+import User from "./components/user.component"
 
+const APP_NAME = process.env.REACT_APP_APP_NAME;
 
 class App extends Component {
   constructor(props) {
@@ -24,6 +29,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    document.title = APP_NAME;
     const user = AuthService.getCurrentUser();
 
     if (user) {
@@ -45,7 +51,7 @@ class App extends Component {
         <div>
           <nav className="navbar navbar-expand navbar-dark bg-dark">
             <Link to={"/"} className="navbar-brand">
-              Issue Tracking System
+              {APP_NAME}
             </Link>
             <div className="navbar-nav mr-auto">
               <li className="nav-item">
@@ -55,18 +61,40 @@ class App extends Component {
               </li>
 
               {currentUser && (
-                <li className="nav-item">
-                  <Link to={"/user"} className="nav-link">
-                    User
-                  </Link>
-                </li>
+                <>
+                  <li className="nav-item">
+                    <Link to={"/project"} className="nav-link">
+                      Projects
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to={"/user"} className="nav-link">
+                      Users
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to={"/home"} className="nav-link">
+                      Report an Issue
+                    </Link>
+                  </li>
+                </>
               )}
             </div>
+
+            <div className="navbar-nav ml-auto">
+              <Form className="form-inline my-2 my-md-0">
+                <Input
+                    type="text" 
+                    className="form-control" placeholder="Search"
+                />
+              </Form>
+            </div>
+
             {currentUser ? (
               <div className="navbar-nav ml-auto">
                 <li className="nav-item">
                   <Link to={"/profile"} className="nav-link">
-                    {currentUser.username}
+                    {currentUser.display_name}
                   </Link>
                 </li>
                 <li className="nav-item">
@@ -97,6 +125,9 @@ class App extends Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/profile" component={Profile} />
+              <Route exact path="/project" component={Project} />
+              <Route exact path="/project/:id" component={Project} />
+              <Route exact path="/user" component={User} />
             </Switch>
           </div>
         </div>

@@ -32,7 +32,7 @@ export default class Home extends Component {
     return (
       <div className="container">
         <header className="jumbotron">
-          <h3>home</h3>
+          <h3>Please Login</h3>
         </header>
       </div>
     );
