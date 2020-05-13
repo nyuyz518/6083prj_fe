@@ -13,7 +13,7 @@ export default class TaskList extends Component {
     }
 
     componentDidMount() {
-        const pid = this.propspid;
+        const pid = this.props.pid;
         taskService.getTaskListForProject(pid).then(
             response => {
                 this.setState({
