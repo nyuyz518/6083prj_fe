@@ -2,10 +2,15 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import _ from 'underscore'
+import _ from 'lodash'
+import moment from 'moment'
+import TSFormat from '../services/ts.format'
+import AuthService from '../services/auth.service'
 import projectService from "../services/project.service";
 import TaskList from './task.list.component';
 import UserList from './user.list.component';
+import Workflow from './workflow.component';
+
 
 const required = value => {
   if (!value) {
@@ -17,43 +22,20 @@ const required = value => {
   }
 };
 
-const vpname = value => {
-  if (value.length < 6 || value.length > 40) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The password must be between 6 and 40 characters.
-      </div>
-    );
-  }
-};
-
-const vdescriptione = value => {
-  if (value.length < 6 || value.length > 40) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The password must be between 6 and 40 characters.
-      </div>
-    );
-  }
-};
-
-const vwfid = value => {
-  if (value.length < 6 || value.length > 40) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The password must be between 6 and 40 characters.
-      </div>
-    );
-  }
-};
-
 export default class Project extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
+      currentUser : AuthService.getCurrentUser()
     };
+
+    this.onChangePname = this.onChangePname.bind(this);
+    this.onChangeWfid = this.onChangeWfid.bind(this);
+    this.onChangeOwners =this.onChangeOwners.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onChangeDescriptionn = this.onChangeDescriptionn.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -79,10 +61,12 @@ export default class Project extends Component {
   }
 
   newProject() {
+    var myself = {uid: this.state.currentUser.uid, created_ts: TSFormat.toStr(moment())};
     this.setState({
       new: "new",
       pid: "new",
-      project: {},
+      project: {owners: [myself]},
+      pdirty: false,
       plist: undefined
     });
   }
@@ -93,6 +77,7 @@ export default class Project extends Component {
         this.setState({
           pid,
           project: response.data,
+          pdirty: false,
           plist: undefined,
           new: undefined
         });
@@ -142,16 +127,53 @@ export default class Project extends Component {
     });
   }
 
-  onChangePname() {
-
+  onChangePname(e) {
+    var project = _.cloneDeep(this.state.project);
+    project.pname = e.target.value;
+    this.setState({
+      project: project,
+      pdirty: true
+    });
   }
 
-  onChangeDescriptionn() {
-
+  onChangeDescriptionn(e) {
+    var project = _.cloneDeep(this.state.project);
+    project.description = e.target.value;
+    this.setState({
+      project: project,
+      pdirty: true
+    });
   }
 
-  onChangeWfid() {
+  onChangeWfid(wfid) {
+    if (this.state.project && wfid !== this.state.project.wfid) {
+      var project = _.cloneDeep(this.state.project);
+      project.wfid = wfid
+      this.setState({
+        project: project,
+        pdirty: true
+      });
+    }
+  }
 
+  onChangeOwners(owners){
+    var project = _.cloneDeep(this.state.project);
+    project.owners = owners;
+    this.setState({
+      project: project,
+      pdirty: true
+    });
+  }
+
+  handleSubmit(e){
+    e.preventDefault();
+    var project = _.cloneDeep(this.state.project);
+    if(this.state.pid === "new"){
+      project.created_ts = TSFormat.toStr(moment());
+      projectService.createProject(project);
+    } else {
+      projectService.updateProject(project, this.state.pid);
+    }
   }
 
   render() {
@@ -190,19 +212,26 @@ export default class Project extends Component {
         )}
 
         {this.state.project && (
-          <Form ref={c => {
+          <Form
+            onSubmit={this.handleSubmit}
+           ref={c => {
             this.form = c;
           }}>
             <div className="container mb-3 border-bottom">
               <div className="container row">
-                <h3>PRJ#{this.state.project.pid} <Input
+                <h3>PRJ#{this.state.pid} <Input
                   type="text"
                   className={`${this.state.new ? "form-control" : "form-control-plaintext"}`}
                   name="pname"
                   value={this.state.project.pname}
                   onChange={this.onChangePname}
-                  validations={[required, vpname]}
+                  validations={[required]}
                 /></h3>
+                { this.state.pdirty && (
+                <div className="form-group">
+                  <button className="btn btn-primary btn-block">Save</button>
+                </div>
+                )}
               </div>
               <div className="form-group row border-bottom">
                 <label className="col-sm-2 control-label" htmlFor="username">Description</label>
@@ -213,21 +242,14 @@ export default class Project extends Component {
                     name="description"
                     value={this.state.project.description}
                     onChange={this.onChangeDescriptionn}
-                    validations={[required, vdescriptione]}
+                    validations={[required]}
                   />
                 </div>
               </div>
               <div className="form-group row border-bottom">
-                <label className="col-sm-2 control-label" htmlFor="wfid">WFID</label>
+                <label className="col-sm-2 control-label" htmlFor="wfid">Workflow</label>
                 <div className="col-sm-10">
-                  <Input
-                    type="text"
-                    className={`${this.state.new ? "form-control" : "form-control-plaintext"}`}
-                    name="wfid"
-                    value={this.state.project.wfid}
-                    onChange={this.onChangeWfid}
-                    validations={[required, vwfid]}
-                  />
+                  <Workflow wfid={this.state.new? "new" : this.state.project.wfid} onWfChange={this.onChangeWfid}/>
                 </div>
               </div>
               <div className="form-group row border-bottom">
@@ -236,9 +258,9 @@ export default class Project extends Component {
                   <UserList
                     className={`${this.state.new ? "form-control" : "form-control-plaintext"}`}
                     name="owners"
-                    value={this.state.project.wfid}
-                    onChange={this.onChangeWfid}
-                    validations={[required, vwfid]}
+                    value={this.state.project.owners}
+                    onChange={this.onChangeOwners}
+                    validations={[required]}
                   />
                 </div>
               </div>
@@ -254,8 +276,7 @@ export default class Project extends Component {
                         className={`${this.state.new ? "form-control" : "form-control-plaintext"}`}
                         name="created_ts"
                         value={this.state.project.created_ts}
-                        onChange={this.onChangeWfid}
-                        validations={[required, vwfid]}
+                        validations={[required]}
                       />
                     </div>
                   </div>

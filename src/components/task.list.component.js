@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import _ from "underscore"
+import _ from "lodash"
 import taskService from "../services/task.service"
 
 export default class TaskList extends Component {

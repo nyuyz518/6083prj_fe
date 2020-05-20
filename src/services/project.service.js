@@ -12,6 +12,14 @@ class ProjectService {
     getProject(pid){
         return Axios.get(SVC_URL+ "/" + pid, {headers: authHeader()});
     }
+
+    updateProject(p, pid) {
+        return Axios.put(SVC_URL+ "/" + pid, p, {headers: authHeader()});
+    }
+
+    createProject(p) {
+        return Axios.post(SVC_URL, p, {headers: authHeader()});
+    }
 }
 
 export default new ProjectService(); 

@@ -13,6 +13,8 @@ import Profile from "./components/profile.component";
 import Home from "./components/home.component";
 import Project from "./components/project.component";
 import User from "./components/user.component"
+import Task from "./components/task.component";
+import Workflow from "./components/workflow.component"
 
 const APP_NAME = process.env.REACT_APP_APP_NAME;
 
@@ -73,7 +75,7 @@ class App extends Component {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to={"/home"} className="nav-link">
+                    <Link to={"/task/new"} className="nav-link">
                       Report an Issue
                     </Link>
                   </li>
@@ -128,6 +130,8 @@ class App extends Component {
               <Route exact path="/project" component={Project} />
               <Route exact path="/project/:id" component={Project} />
               <Route exact path="/user" component={User} />
+              <Route exact path="/task/:id" component={Task} />
+              <Route exact path="/workflow/:id" component={Workflow} />
             </Switch>
           </div>
         </div>

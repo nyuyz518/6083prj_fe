@@ -1,6 +1,6 @@
 import axios from "axios";
 import moment from "moment";
-import TSFormat from "./ts.format.js"
+import TSFormat from "./ts.format.ts"
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 

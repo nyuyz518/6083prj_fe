@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import _ from "underscore"
+import _ from "lodash"
 import randomColor from "randomcolor"
 
 import UserService from "../services/user.service";
