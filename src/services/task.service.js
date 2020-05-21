@@ -28,6 +28,10 @@ class TaskService {
     changeTaskStatus(tid, status){
         return Axios.post(SVC_URL + "/" + tid + "/status", {status}, {headers: authHeader()})
     }
+
+    findTasksByText(t){
+        return Axios.get(SVC_URL, {headers: authHeader(), params: {title: t}});
+    }
 }
 
 export default new TaskService(); 

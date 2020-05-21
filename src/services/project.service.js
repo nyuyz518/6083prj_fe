@@ -20,6 +20,10 @@ class ProjectService {
     createProject(p) {
         return Axios.post(SVC_URL, p, {headers: authHeader()});
     }
+
+    findProjectsByText(t) {
+        return Axios.get(SVC_URL, {headers: authHeader(), params: {title:t}});
+    }
 }
 
 export default new ProjectService(); 

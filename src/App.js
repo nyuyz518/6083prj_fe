@@ -15,6 +15,7 @@ import Project from "./components/project.component";
 import User from "./components/user.component"
 import Task from "./components/task.component";
 import Workflow from "./components/workflow.component"
+import Search from "./components/search.component";
 
 const APP_NAME = process.env.REACT_APP_APP_NAME;
 
@@ -28,6 +29,7 @@ class App extends Component {
       showAdminBoard: false,
       currentUser: undefined
     };
+    this.search = this.search.bind(this);
   }
 
   componentDidMount() {
@@ -43,6 +45,10 @@ class App extends Component {
 
   logOut() {
     AuthService.logout();
+  }
+
+  search(e){
+    this.setState({qs:e.target.value});
   }
 
   render() {
@@ -88,7 +94,11 @@ class App extends Component {
                 <Input
                     type="text" 
                     className="form-control" placeholder="Search"
+                    onChange={this.search}
                 />
+                <Link to={`/search?qs=${this.state.qs}`} className="nav-link">
+                    Go
+                </Link>
               </Form>
             </div>
 
@@ -132,6 +142,7 @@ class App extends Component {
               <Route exact path="/user" component={User} />
               <Route exact path="/task/:id" component={Task} />
               <Route exact path="/workflow/:id" component={Workflow} />
+              <Route exact path="/search" component={Search} />
             </Switch>
           </div>
         </div>
