@@ -295,7 +295,7 @@ export default class Project extends Component {
                   </div>
                   <div className="container row mb-2">
                     <h4 className="mr-auto">Issues:</h4>
-                    <Link className="ml-auto" to="/task/new">
+                    <Link className="ml-auto" to={`/task/new?pid=${this.state.pid}`}>
                       <button className="btn btn-primary" type="button">
                         Add
                       </button>

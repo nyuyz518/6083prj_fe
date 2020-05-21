@@ -4,6 +4,7 @@ import Input from "react-validation/build/input";
 import _ from 'lodash';
 import taskService from '../services/task.service';
 import UserList from './user.list.component';
+import qs from 'qs'
 
 const required = value => {
   if (!value) {
@@ -26,6 +27,7 @@ export default class Task extends Component {
 
   componentDidMount() {
     const tid = this.props.match.params.id;
+    const pid = qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).pid;
     if(tid === "new"){
       this.setState({
         new:"new"
@@ -47,6 +49,10 @@ export default class Task extends Component {
         }
       );
     }
+  }
+
+  onChangeAssign(assignees){
+
   }
   
   render() {
@@ -128,7 +134,7 @@ export default class Task extends Component {
                     className={`${isNew ? "form-control" : "form-control-plaintext"}`}
                     name="owners"
                     value={task.assignees}
-                    onChange={this.onChangeWfid}
+                    onChangeUlist={this.onChangeAssign}
                   />
                 </div>
               </div>
