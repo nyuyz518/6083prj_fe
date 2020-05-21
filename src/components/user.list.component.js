@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import moment from 'moment'
+import TSFormat from '../services/ts.format'
 import Autocomplete from 'react-autocomplete'
 import _ from "lodash"
 
@@ -17,16 +19,13 @@ export default class UserList extends Component {
 
     componentDidMount(){
         const aList = this.props.value;
-        _.forEach(aList, a => {
-            this.addUserToList(a)  
-        }
-        );
 
         userService.getUsers().then(
             response =>{
                 this.setState({
                     allUser: response.data
-                })
+                });
+                this.addUsersToList(aList);
             },
             error => {
                 this.setState({
@@ -39,24 +38,39 @@ export default class UserList extends Component {
         )
     }
 
-    addUserToList(a){
-        userService.getUser(a.uid).then(
-            response => {
-                var ulist = _.cloneDeep(this.state.ulist);
-                ulist.push(response.data); 
-              this.setState({
-                ulist: ulist
-              });
-            },
-            error => {
-              this.setState({
-                content:
-                  (error.response && error.response.data) ||
-                  error.message ||
-                  error.toString()
-              });
+    ulistUpdated(ulist){
+        this.props.onChangeUlist(_.map(ulist, u => { return {uid: u.uid, created_ts: TSFormat.toStr(moment())}}));
+    }
+
+    addUsersToList(aList) {
+        var ulist;
+        _.forEach(aList, a => {
+            ulist = this.doAddUserToList(a) ;
             }
-          );
+        );
+        this.ulistUpdated(ulist);
+    }
+
+    addUserToList(a){
+        this.ulistUpdated(this.doAddUserToList(a));
+    }
+
+    doAddUserToList(a){
+        var user = _.find(this.state.allUser, u => u.uid === a.uid);
+        var allUser = _.filter(this.state.allUser, u => u.uid !== a.uid);
+        var ulist = _.clone(this.state.ulist);
+        ulist.push(user);
+        this.setState({allUser, ulist});
+        return ulist;
+    }
+
+    removeUserFromList(a){
+        var user = _.find(this.state.ulist, u => u.uid === a.uid);
+        var ulist = _.filter(this.state.ulist, u => u.uid !== a.uid);
+        var allUser = _.clone(this.state.allUser);
+        allUser.push(user);
+        this.setState({allUser, ulist});
+        this.ulistUpdated(ulist);
     }
 
 
@@ -67,12 +81,16 @@ export default class UserList extends Component {
                         return (
                             <div className="mr-2">
                                 <lable>{u.display_name}</lable>
-                                <button type="button" className="close mr-2" data-dismiss="modal" aria-label="Close">
+                                {this.props.mode !== "new" && (
+                                <button type="button" className="close mr-2" value={u.uid} data-dismiss="modal" aria-label="Close" onClick={(e) => this.removeUserFromList({uid: `${u.uid}`})}>
                                     <span aria-hidden="true">&times;</span>
                                 </button>
+                                )}
                             </div>
                         )
                     })}
+
+                    {this.props.mode !== "new" && (
                     
                     <Autocomplete className="ml-auto"
                      items={this.state.allUser}
@@ -89,7 +107,9 @@ export default class UserList extends Component {
                       }
                       value={this.state.value}
                       onChange={e => this.setState({ value: e.target.value })}
-                      onSelect={(value, item) => this.addUserToList(item)}/>
+                      onSelect={(value, item) => {this.addUserToList(item)}}/>
+                    )
+                    }
 
             </div>
         )

@@ -158,21 +158,34 @@ export default class Project extends Component {
 
   onChangeOwners(owners){
     var project = _.cloneDeep(this.state.project);
-    project.owners = owners;
-    this.setState({
-      project: project,
-      pdirty: true
-    });
+    var puids = _.map(project.owners, u => u.uid).sort();
+    var auids = _.map(owners, u => u.uid).sort();
+    if (!_.isEqual(puids, auids)) {
+      project.owners = owners;
+      this.setState({
+        project: project,
+        pdirty: true
+      });
+    }
   }
 
   handleSubmit(e){
     e.preventDefault();
+    const history = this.props.history;
     var project = _.cloneDeep(this.state.project);
     if(this.state.pid === "new"){
       project.created_ts = TSFormat.toStr(moment());
-      projectService.createProject(project);
+      projectService.createProject(project).then(
+        response => {
+          history.push("/project/" + response.data.pid);
+        }
+      );
     } else {
-      projectService.updateProject(project, this.state.pid);
+      projectService.updateProject(project, this.state.pid).then(
+        response => {
+          history.push("/project/" + this.state.pid);
+        }
+      );
     }
   }
 
@@ -259,8 +272,8 @@ export default class Project extends Component {
                     className={`${this.state.new ? "form-control" : "form-control-plaintext"}`}
                     name="owners"
                     value={this.state.project.owners}
-                    onChange={this.onChangeOwners}
-                    validations={[required]}
+                    mode={this.state.pid}
+                    onChangeUlist={this.onChangeOwners}
                   />
                 </div>
               </div>
