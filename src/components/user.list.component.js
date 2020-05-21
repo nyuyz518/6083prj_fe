@@ -17,25 +17,37 @@ export default class UserList extends Component {
         };
     }
 
+    componentDidUpdate(prevProps) {
+        if(prevProps.value === undefined){
+            const aList = this.props.value;
+            this.getUsers(aList);
+        }
+    }
+
     componentDidMount(){
         const aList = this.props.value;
+        this.getUsers(aList);
+    }
 
-        userService.getUsers().then(
-            response =>{
-                this.setState({
-                    allUser: response.data
-                });
-                this.addUsersToList(aList);
-            },
-            error => {
-                this.setState({
-                  content:
-                    (error.response && error.response.data) ||
-                    error.message ||
-                    error.toString()
-                });
-            }
-        )
+    getUsers(aList) {
+        if (aList) {
+            userService.getUsers().then(
+                response => {
+                    this.setState({
+                        allUser: response.data
+                    });
+                    this.addUsersToList(aList);
+                },
+                error => {
+                    this.setState({
+                        content:
+                            (error.response && error.response.data) ||
+                            error.message ||
+                            error.toString()
+                    });
+                }
+            );
+        }
     }
 
     ulistUpdated(ulist){
@@ -80,7 +92,8 @@ export default class UserList extends Component {
                     {this.state.ulist && _.map(this.state.ulist, u=> {
                         return (
                             <div className="mr-2">
-                                <lable>{u.display_name}</lable>
+                                <span className="d-inline-block" tabindex="0" data-toggle="tooltip" title={`At ${u.created_ts}`}>
+                                <lable>{u.display_name}</lable></span>
                                 {this.props.mode !== "new" && (
                                 <button type="button" className="close mr-2" value={u.uid} data-dismiss="modal" aria-label="Close" onClick={(e) => this.removeUserFromList({uid: `${u.uid}`})}>
                                     <span aria-hidden="true">&times;</span>

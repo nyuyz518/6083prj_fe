@@ -178,12 +178,28 @@ export default class Project extends Component {
       projectService.createProject(project).then(
         response => {
           history.push("/project/" + response.data.pid);
+        },
+        error => {
+          this.setState({
+            error:
+              (error.response && error.response.data) ||
+              error.message ||
+              error.toString()
+          })
         }
       );
     } else {
       projectService.updateProject(project, this.state.pid).then(
         response => {
-          history.push("/project/" + this.state.pid);
+          history.go(0);
+        },
+        error => {
+          this.setState({
+            error:
+              (error.response && error.response.data) ||
+              error.message ||
+              error.toString()
+          })
         }
       );
     }
@@ -303,6 +319,21 @@ export default class Project extends Component {
                   </div>
                   <TaskList pid={this.state.project.pid} />
                 </>
+              )}
+
+              {this.state.message && (
+                <div className="form-group">
+                  <div
+                    className={
+                      this.state.successful
+                        ? "alert alert-success"
+                        : "alert alert-danger"
+                    }
+                    role="alert"
+                  >
+                    {this.state.message}
+                  </div>
+                </div>
               )}
             </div>
           </Form>

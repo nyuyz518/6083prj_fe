@@ -35,7 +35,7 @@ export default class TaskList extends Component {
             return (
                 <tr>
                     <th scope="row">{t.tid}</th>
-                    <td><Link to={`/task/${t.pid}`}>{t.title}</Link></td>
+                    <td><Link to={`/task/${t.tid}`}>{t.title}</Link></td>
                     <td>{t.status}</td>
                     <td>{t.description}</td>
                 </tr>

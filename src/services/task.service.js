@@ -12,6 +12,22 @@ class TaskService {
     getTask(tid) {
         return Axios.get(SVC_URL + "/" + tid , {headers: authHeader()});
     }
+
+    createTask(task) {
+        return Axios.post(SVC_URL, task, {headers: authHeader()})
+    }
+
+    updateTask(task, tid) {
+        return Axios.put(SVC_URL + "/" + tid, task, {headers: authHeader()})
+    }
+
+    getTaskStatusHistory(tid){
+        return Axios.get(SVC_URL + "/" + tid + "/status", {headers: authHeader()})
+    }
+
+    changeTaskStatus(tid, status){
+        return Axios.post(SVC_URL + "/" + tid + "/status", {status}, {headers: authHeader()})
+    }
 }
 
 export default new TaskService(); 
