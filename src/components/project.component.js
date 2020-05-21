@@ -67,7 +67,8 @@ export default class Project extends Component {
       pid: "new",
       project: {owners: [myself]},
       pdirty: false,
-      plist: undefined
+      plist: undefined,
+      error: ""
     });
   }
 
@@ -79,16 +80,20 @@ export default class Project extends Component {
           project: response.data,
           pdirty: false,
           plist: undefined,
-          new: undefined
+          new: undefined,
+          error : ""
         });
       },
       error => {
+        const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
         this.setState({
-          error:
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString()
-        });
+          error: resMessage
+        })
       });
   }
 
@@ -99,16 +104,20 @@ export default class Project extends Component {
           plist: response.data,
           project: undefined,
           pid: undefined,
-          new: undefined
+          new: undefined,
+          error: ""
         });
       },
       error => {
+        const resMessage =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
         this.setState({
-          error:
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString()
-        });
+          error: resMessage
+        })
       });
   }
 
@@ -180,11 +189,14 @@ export default class Project extends Component {
           history.push("/project/" + response.data.pid);
         },
         error => {
+          const resMessage =
+                  (error.response &&
+                      error.response.data &&
+                      error.response.data.message) ||
+                  error.message ||
+                  error.toString();
           this.setState({
-            error:
-              (error.response && error.response.data) ||
-              error.message ||
-              error.toString()
+            error: resMessage
           })
         }
       );
@@ -194,11 +206,14 @@ export default class Project extends Component {
           history.go(0);
         },
         error => {
+          const resMessage =
+                  (error.response &&
+                      error.response.data &&
+                      error.response.data.message) ||
+                  error.message ||
+                  error.toString();
           this.setState({
-            error:
-              (error.response && error.response.data) ||
-              error.message ||
-              error.toString()
+            error: resMessage
           })
         }
       );
