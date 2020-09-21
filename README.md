@@ -1,3 +1,15 @@
+This is a final project from New York University CS 6083 Database. Feature includes a fully function authentication system. 
+Frontend uses JavaScript, React;  Backend uses Php
+
+To start, open to terminals. 
+For frontend run:
+###`npm install`
+###`npm start`
+for backend, run:
+###`php -S localhost:8000`
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
