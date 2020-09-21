@@ -3,10 +3,11 @@ Frontend uses JavaScript, React;  Backend uses Php
 
 To start, open to terminals. 
 For frontend run:
-## npm install
-## npm start
+`npm install`
+`npm start`
 for backend, run:
-## php -S localhost:8000
+`composer update`
+`php -S localhost:8000`
 
 
 
