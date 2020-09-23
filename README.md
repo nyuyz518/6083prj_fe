@@ -11,13 +11,13 @@ Design and implement a web-based issue tracking system similar to Jira. It allow
              	      	    
 
 ## The frontend 
-Designed and implemented a full-stack web application, features include a fully functioned authentication system using JWT. 
-There are 4 core functionality it implements: User Management, Project Management, Issue Tracking, Search. 
-To start front end user interface, run: `npm install`to update packet, and then `npm start` 
+- Designed and implemented a full-stack web application, features include a fully functioned authentication system using JWT. 
+- There are 4 core functionality it implements: User Management, Project Management, Issue Tracking, Search. 
+- To start front end user interface, run: `npm install`to update packet, and then `npm start` 
 
 ## The Backend 
-Designed and implemented complete data models for relational database.
-It follows the MVC pattern however implements only the controller (being the rest controller) and model. 
-There are 4 groups of action in backend: User, Project, Task, Workflow (Status).
-To start backend server, run: `composer update` to update packet, and then `php -S 127.0.0.1:8000 -t public` 
+- Designed and implemented complete data models for relational database.
+- It follows the MVC pattern however implements only the controller (being the rest controller) and model. 
+- There are 4 groups of action in backend: User, Project, Task, Workflow (Status).
+- To start backend server, run: `composer update` to update packet, and then `php -S 127.0.0.1:8000 -t public` 
 
